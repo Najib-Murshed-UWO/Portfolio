@@ -1,0 +1,47 @@
+import { useState } from "react";
+import Project from "../components/Project";
+import { myProjects } from "../constants";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import TitleHeader from "../components/TitleHeader";
+const Projects = () => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { damping: 10, stiffness: 50 });
+  const springY = useSpring(y, { damping: 10, stiffness: 50 });
+  const handleMouseMove = (e) => {
+    x.set(e.clientX + 20);
+    y.set(e.clientY + 20);
+  };
+  const [preview, setPreview] = useState(null);
+  return (
+    <section
+      id="work"
+      onMouseMove={handleMouseMove}
+      className="relative c-space section-spacing"
+    >
+      <div className="flex-center md:mt-40 mt-20">
+        <TitleHeader
+          title="My Selected Projects"
+          sub="💻 Featured Work"
+        />
+      </div>
+      <div className="flex-center mt-12">
+        <div className="w-full max-w-7xl mx-auto px-5 md:px-10">
+          <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent h-[1px] w-full mb-8" />
+          {myProjects.map((project) => (
+            <Project key={project.id} {...project} setPreview={setPreview} />
+          ))}
+        </div>
+      </div>
+      {preview && (
+        <motion.img
+          className="fixed top-0 left-0 z-50 object-cover h-80 w-160 rounded-lg shadow-lg pointer-events-none"
+          src={preview}
+          style={{ x: springX, y: springY }}
+        />
+      )}
+    </section>
+  );
+};
+
+export default Projects;
